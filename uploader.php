@@ -1,12 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php
+   if(isset($_FILES['file'])){
+      $errors= array();
+      if(isset($_POST['name'])){
+        $file_name = $_POST['name'];
+      } else {
+        $file_name = $_FILES['file']['name'];   
+      }
+      $file_size =$_FILES['file']['size'];
+      $file_tmp =$_FILES['file']['tmp_name'];
+      $file_type=$_FILES['file']['type'];
+      $file_path = "uploads/".$file_name;
+      $dir_path = "uploads";
+
+     
+      if($file_size < 1){
+         $errors ='PROBLEM, TRY AGAIN';
+      }
+      
+      if(empty($errors)==true){
+         if(!file_exists($dir_path)){
+            mkdir($dir_path, 0777, true);
+            if(file_exists($dir_path) && !file_exists($file_path)){
+
+               if(move_uploaded_file($file_tmp,"../upfile/".$file_name)){
+                  echo "File : <a href='../upfile/$file_name'>$file_name</a>";
+               }else{
+                  echo $errors;
+               }
+            
+            }else{
+               echo $errors;
+            }
+         }else{
+            move_uploaded_file($file_tmp,"../upfile/".$file_name);
+            echo "File : <a href='../upfile/$file_name'>$file_name</a>";
+         }
+      }else{
+         print_r($errors);
+      }
+      die();
+   }
+?>
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<meta name="description" content="Dynamic File Uploader to upload file with real time upload progress, total size of file etc.">
 	<meta name="keywords" content="dynamic, uploader, upload, file, realtime, progress, procces, size, etc.">
-	<meta name="author" content="Md. Saifur Rahman and Shakil Ahmed">
+	<meta name="author" content="Md. Saifur Rahman and Shakil Ahmed and slabs37">
 	<meta property="og:image" content="https://i.ibb.co/HtqRhv3/logo.png">
 	<title>Dynamic File Uploader</title>
 	<link rel="shortcut icon" href="https://i.ibb.co/k6ZrV5t/icons8-upload-64.png" type="image/x-icon">
@@ -237,15 +278,16 @@
 </head>
 <body>
 
-	<div class="section">
+	<div class="section" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
 		<div class="container">
 			<h1 class="title">dynamic file uploader</h1>
 
 			<form method="POST" id="upload_form" enctype="multipart/form-data">
 				<span class="label">tap the plus icon to choose file</span>
 				<input type="file" name="file[]" id="file" class="file" data-multiple-caption="{count} files are selected" multiple>
+				
 
-				<label for="file" class="file" >
+				<label for="file" class="file">
 					<span class="block white">No file is chosen</span>
 					<i class="fas fa-plus-circle fa-2x"></i>
 				</label>
@@ -258,19 +300,18 @@
 				<div id="pass">
 				
 				</div>
+				<input type="hidden" id="name" name="name" value="">
 			</form>
 			
 			
 
-			<div class="credit">
-				<span>copyright &copy; 2020. all right reserved by <a href="#">Codebumble Inc.</a></span>
-			</div>
 		</div>
 	</div>
 
 	<!-- <script src="app.js"></script> -->
 
 	<script>
+	    var filenameset;
 		// Files Counter
 		(function (document, window, index) {
 			var inputs = document.querySelectorAll('.file');
@@ -280,16 +321,22 @@
 
 				input.addEventListener('change', function (e) {
 					var fileName = '';
+					filenameset = '';
 					if (this.files && this.files.length > 1)
 						fileName = (this.getAttribute('data-multiple-caption') || '').replace('{count}',
 							this.files.length);
 					else
 						fileName = e.target.value.split('\\').pop();
-
-					if (fileName)
-						label.querySelector('span').innerHTML = fileName;
-					else
+					if (fileName) {
+					    if (document.getElementById('name').value !== '') {
+					        fileName = document.getElementById('name').value;
+					        document.getElementById('name').value = '';
+					        filenameset = fileName;
+					    }
+					    label.querySelector('span').innerHTML = fileName;
+					} else {
 						label.innerHTML = labelVal;
+					}
 				});
 
 				// Firefox bug fix
@@ -328,16 +375,20 @@
             $("#pass").append("<div class=\"progress\" id=\"progress-bar-sh-"+i+"\"><div id=\"myBar-"+i+"\" class=\"progress-bar progress-bar-striped active\" style=\"width:0%\">0%</div></div><div id=\"stats-"+i+"\" class=\"white\"><h3 id=\"status-"+i+"\"></h3><p id=\"loaded_n_total-"+i+"\"></p><p id=\"shakil-"+i+"\">Uploaded: <span id=\"n_loaded-"+i+"\"></span> / <span></span><span id=\"n_total-"+i+"\"></span><span id=\"n_per-"+i+"\"></span></p></div>");
 	
             		var file = _("file").files[i];
-		// alert(file.name+" | "+file.size+" | "+file.type);
+		 //alert(file.name+" | "+file.size+" | "+file.type);
 		var formdata = new FormData();
 		formdata.append("file", file);
+		if (filenameset !== '') {
+		    formdata.append("name", filenameset);
+		}
 		var ajax = new XMLHttpRequest();
 		ajax.upload.addEventListener("progress", progressHandler.bind(null, i), false);
 		ajax.addEventListener("load", completeHandler.bind(null, i), false);
 		ajax.addEventListener("error", errorHandler.bind(null, i), false);
 		ajax.addEventListener("abort", abortHandler.bind(null, i), false);
-		ajax.open("POST", "dependency.php");
-		ajax.send(formdata);
+		ajax.open("POST", "<?php echo $_SERVER['PHP_SELF'];?>");
+		ajax.send(formdata);    
+		
            }
 
 	});
@@ -376,7 +427,7 @@
 	document.getElementById("file").addEventListener("click",function() {
 		$("#pass").html("");
 		
-});
+    });
 
 	function completeHandler(num,event) {
 	    $("#progress-bar-sh-"+num).css({ display: "none" });
@@ -400,7 +451,47 @@
 	     $("#shakil-"+num).css({ display: "none" });
 		_("status-"+num).innerHTML = "Upload Aborted";
 	}
-	
+
+    //Drag And Drop Support
+    
+    function dropHandler(event) {
+      console.log("File(s) dropped");
+      
+      var files=event.target.files||event.dataTransfer.files
+    
+      // Prevent default behavior (Prevent file from being opened)
+      event.preventDefault();
+    
+      document.getElementById('file').files = files;
+      var vent = new Event('change');
+    
+      document.getElementById('file').dispatchEvent(vent);
+    }
+    function dragOverHandler(event) {
+      console.log("File(s) in drop zone");
+    
+      // Prevent default behavior (Prevent file from being opened)
+      event.preventDefault();
+    }
+
+    // File Paste Support
+    
+    window.addEventListener('paste', e => {
+        if (e.clipboardData.files[0]['name'] == "image.png") {
+            
+            let date = new Date();
+            let newFileName = window.prompt("File Name",date.toISOString().replaceAll('-', '_').replaceAll(':', '_').replaceAll('Z', '.png').replaceAll('T', '_'));
+            document.getElementById('name').value = newFileName;
+            console.log(newFileName);
+        }
+        
+        document.getElementById('file').files = e.clipboardData.files;
+        console.log(e.clipboardData.files);
+        var vent = new Event('change');
+        document.getElementById('file').dispatchEvent(vent);
+    });
+
+
 	</script>
 	<script src="https://kit.fontawesome.com/6b46e3b6bd.js" crossorigin="anonymous"></script>
 </body>
