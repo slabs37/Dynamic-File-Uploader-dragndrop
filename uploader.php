@@ -9,8 +9,10 @@
       $file_size =$_FILES['file']['size'];
       $file_tmp =$_FILES['file']['tmp_name'];
       $file_type=$_FILES['file']['type'];
-      $file_path = "uploads/".$file_name;
+      
+      // Upload destination, feel free to change
       $dir_path = "uploads";
+      $file_path = $dir_path."/".$file_name;
 
      
       if($file_size < 1){
@@ -22,8 +24,8 @@
             mkdir($dir_path, 0777, true);
             if(file_exists($dir_path) && !file_exists($file_path)){
 
-               if(move_uploaded_file($file_tmp,"../upfile/".$file_name)){
-                  echo "File : <a href='../upfile/$file_name'>$file_name</a>";
+               if(move_uploaded_file($file_tmp,$dir_path."/".$file_name)){
+                  echo "File : <a href='$dir_path/$file_name'>$file_name</a>";
                }else{
                   echo $errors;
                }
@@ -32,8 +34,8 @@
                echo $errors;
             }
          }else{
-            move_uploaded_file($file_tmp,"../upfile/".$file_name);
-            echo "File : <a href='../upfile/$file_name'>$file_name</a>";
+            move_uploaded_file($file_tmp,$dir_path."/".$file_name);
+            echo "File : <a href='$dir_path/$file_name'>$file_name</a>";
          }
       }else{
          print_r($errors);
