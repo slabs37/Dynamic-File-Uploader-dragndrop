@@ -2,30 +2,32 @@
 
 This uploader is made with Javascript, PHP and CSS. So any host can use this simple to there website as a full page uploader.
 
-
-
 # Features
 
  * Awesome UI
  
- * Single File Upload
+ * Single File & Multi File Upload
  
  * Progress-Bar
  
  * Upload Percentage
 
- * Total File SIze
+ * Total File Size
 
- * Real Time Uploaded Fize
+ * Real Time Uploaded Size
+
+ * Drag And Drop Support
+
+ * Pasting From Clipboard Support
 
 # Installation
 
-Just Upload the `uploader.php` & `dependency.php`  to your php server(included hosting and other basic server) and Just Run The Uploader.php
+Just upload the `uploader.php` to your php server(included hosting and other basic server) and just run the uploader.php
 
 
 # Modification
 
-You Can Change name of Uploader.php but if you change name of dependency.php , you have to edit the uploader.php
+You can change name of uploader.php without any issues
 
 
 # Contact US
