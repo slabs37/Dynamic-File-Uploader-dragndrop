@@ -303,7 +303,9 @@
 				<input type="hidden" id="name" name="name" value="">
 			</form>
 			
-			
+			<div class="credit">
+				<span>Created by shakilofficial0, Improved by slabs37</span>
+			</div>		
 
 		</div>
 	</div>
