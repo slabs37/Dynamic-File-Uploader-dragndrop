@@ -54,7 +54,6 @@
 	<title>Dynamic File Uploader</title>
 	<link rel="shortcut icon" href="https://i.ibb.co/k6ZrV5t/icons8-upload-64.png" type="image/x-icon">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 	<style>
 	
@@ -307,7 +306,8 @@
 			
 			<div class="credit">
 				<span>Created by shakilofficial0, Improved by slabs37</span>
-			</div>		
+			</div>			
+			
 
 		</div>
 	</div>
@@ -369,19 +369,16 @@
 	 }
 
 	// Progress Bar
-	function _(el) {
-		return document.getElementById(el);
-	}
 
 	document.getElementById("submit").addEventListener("click", function () {
-		$("#pass").html("");
+		document.getElementById("pass").innerHTML = ""
 		
         var input = document.getElementById('file');
         console.log(input.files.length);
         for (var i = 0; i < input.files.length; ++i) {
-            $("#pass").append("<div class=\"progress\" id=\"progress-bar-sh-"+i+"\"><div id=\"myBar-"+i+"\" class=\"progress-bar progress-bar-striped active\" style=\"width:0%\">0%</div></div><div id=\"stats-"+i+"\" class=\"white\"><h3 id=\"status-"+i+"\"></h3><p id=\"loaded_n_total-"+i+"\"></p><p id=\"shakil-"+i+"\">Uploaded: <span id=\"n_loaded-"+i+"\"></span> / <span></span><span id=\"n_total-"+i+"\"></span><span id=\"n_per-"+i+"\"></span></p></div>");
+            document.querySelector("#pass").insertAdjacentHTML("beforeend","<div class=\"progress\" id=\"progress-bar-sh-"+i+"\"><div id=\"myBar-"+i+"\" class=\"progress-bar progress-bar-striped active\" style=\"width:0%\">0%</div></div><div id=\"stats-"+i+"\" class=\"white\"><h3 id=\"status-"+i+"\"></h3><p id=\"loaded_n_total-"+i+"\"></p><p id=\"shakil-"+i+"\">Uploaded: <span id=\"n_loaded-"+i+"\"></span> / <span></span><span id=\"n_total-"+i+"\"></span><span id=\"n_per-"+i+"\"></span></p></div>");
 	
-            		var file = _("file").files[i];
+            		var file = document.getElementById("file").files[i];
 		 //alert(file.name+" | "+file.size+" | "+file.type);
 		var formdata = new FormData();
 		formdata.append("file", file);
@@ -420,9 +417,9 @@
 		var total = (event.total / (1024 * 1024));
 		var totalr = Math.round(total);
 		
-		_("n_total-"+num).innerHTML = +totalr + " MB";
-		_("n_loaded-"+num).innerHTML = +loaded + " MB";
-		_("n_per-"+num).innerHTML = " (" + width + "%)";
+		document.getElementById("n_total-"+num).innerHTML = +totalr + " MB";
+		document.getElementById("n_loaded-"+num).innerHTML = +loaded + " MB";
+		document.getElementById("n_per-"+num).innerHTML = " (" + width + "%)";
 		if(width == 100){
 			elem.classList.add("progress-bar-success");
 			elem.innerHTML = "Complete";
@@ -432,32 +429,37 @@
 	}
 
 	document.getElementById("file").addEventListener("click",function() {
-		$("#pass").html("");
-		
-    });
+  
+		document.querySelector("#pass").innerHTML = "";
+}
+);
 
 	function completeHandler(num,event) {
-	    $("#progress-bar-sh-"+num).css({ display: "none" });
-	     $("#loaded_n_total-"+num).css({ display: "none" });
-	     $("#shakil-"+num).css({ display: "none" });
-		_("status-"+num).innerHTML = event.target.responseText;
-		// _("progressBar").value = 0;
-		
-	}
+  
+	    document.querySelector("#progress-bar-sh-"+num).hidden = true;
+	     document.querySelector("#loaded_n_total-"+num).hidden = true;
+	     document.querySelector("#shakil-"+num).hidden = true;
+		document.querySelector("#status-"+num).innerHTML = event.target.responseText;
+		// document.getElementById("progressBar").value = 0;
+}
+
 
 	function errorHandler(num,event) {
-	    $("#progress-bar-sh-"+num).css({ display: "none" });
-	     $("#loaded_n_total-"+num).css({ display: "none" });
-	     $("#shakil-"+num).css({ display: "none" });
-		_("status-"+num).innerHTML = "Upload Failed";
-	}
+  
+	    //document.querySelector("#progress-bar-sh-"+num).hidden = true;
+	     //document.querySelector("#loaded_n_total-"+num).hidden = true;
+	     //document.querySelector("#shakil-"+num).hidden = true;
+		document.querySelector("#status-"+num).innerHTML = "Upload Failed";
+}
+
 
 	function abortHandler(num,event) {
-	    $("#progress-bar-sh-"+num).css({ display: "none" });
-	     $("#loaded_n_total-"+num).css({ display: "none" });
-	     $("#shakil-"+num).css({ display: "none" });
-		_("status-"+num).innerHTML = "Upload Aborted";
-	}
+  
+	    document.querySelector("#progress-bar-sh-"+num).hidden = true;
+	     document.querySelector("#loaded_n_total-"+num).hidden = true;
+	     document.querySelector("#shakil-"+num).hidden = true;
+		document.querySelector("#status-"+num).innerHTML = "Upload Aborted";
+}
 
     //Drag And Drop Support
     
@@ -487,16 +489,15 @@
         if (e.clipboardData.files[0]['name'] == "image.png") {
             
             let date = new Date();
-            let newFileName = window.prompt("File Name",date.toISOString().replaceAll('-', '_').replaceAll(':', '_').replaceAll('Z', '.png').replaceAll('T', '_'));
+            let newFileName = window.prompt("File Name","Screenshot".concat(date.toISOString().replaceAll('-', '_').replaceAll(':', '_').replaceAll('Z', '.png').replaceAll('T', '_')));
             document.getElementById('name').value = newFileName;
-            console.log(newFileName);
         }
         
         document.getElementById('file').files = e.clipboardData.files;
         console.log(e.clipboardData.files);
         var vent = new Event('change');
         document.getElementById('file').dispatchEvent(vent);
-	if (e.clipboardData.files[0]['name'] == "image.png") { scPreview(); }
+        if (e.clipboardData.files[0]['name'] == "image.png") { scPreview(); }
     });
 
 
@@ -504,7 +505,3 @@
 	<script src="https://kit.fontawesome.com/6b46e3b6bd.js" crossorigin="anonymous"></script>
 </body>
 </html>
-<!-- <script>
-    var elem = document.getElementsByTagName("div")[6];
-    elem.remove();
-</script> -->
