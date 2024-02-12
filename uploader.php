@@ -295,7 +295,7 @@
 				</label>
 
 
-				<!-- <img id="uploadPreview" class="preview" id="preview"> -->
+				<img id="uploadPreview" class="preview" id="preview">
 
 				<button type="button" value="Upload" class="submit" id="submit">Upload</button>
                 
@@ -311,8 +311,6 @@
 
 		</div>
 	</div>
-
-	<!-- <script src="app.js"></script> -->
 
 	<script>
 	    var filenameset;
@@ -354,16 +352,21 @@
 		}(document, window, 0));
 
 
-	// Preview
+	// Image Preview Only For Screenshots
+	
+	document.getElementById("file").addEventListener("change", function(){
+	    document.getElementById("uploadPreview").hidden = true;
+	})
 
-	// document.getElementById("file").addEventListener("change", function(){
-	// 	var oFReader = new FileReader();
-	// 	oFReader.readAsDataURL(document.getElementById("file").files[0]);
+	 function scPreview() {
+	 	var oFReader = new FileReader();
+	 	oFReader.readAsDataURL(document.getElementById("file").files[0]);
 
-	// 	oFReader.onload = function (oFREvent) {
-	// 		document.getElementById("uploadPreview").src = oFREvent.target.result;
-	// 	};
-	// })
+	 	oFReader.onload = function (oFREvent) {
+     		document.getElementById("uploadPreview").src = oFREvent.target.result;
+     		document.getElementById("uploadPreview").hidden = false;
+	 	};
+	 }
 
 	// Progress Bar
 	function _(el) {
@@ -493,6 +496,7 @@
         console.log(e.clipboardData.files);
         var vent = new Event('change');
         document.getElementById('file').dispatchEvent(vent);
+	if (e.clipboardData.files[0]['name'] == "image.png") { scPreview(); }
     });
 
 
