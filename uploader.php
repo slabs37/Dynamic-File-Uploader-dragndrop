@@ -490,6 +490,9 @@
             
             let date = new Date();
             let newFileName = window.prompt("File Name","Screenshot".concat(date.toISOString().replaceAll('-', '_').replaceAll(':', '_').replaceAll('Z', '.png').replaceAll('T', '_')));
+            if (newFileName.indexOf(".png") == -1 && newFileName.indexOf(".jpg") == -1 ) {
+                newFileName = newFileName + ".png";
+            }
             document.getElementById('name').value = newFileName;
         }
         
