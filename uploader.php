@@ -503,6 +503,13 @@
         if (e.clipboardData.files[0]['name'] == "image.png") { scPreview(); }
     });
 
+    // Press enter to upload
+    
+    window.addEventListener("keypress", e => {
+      if (e.key === "Enter") {
+        document.getElementById("submit").click();
+      }
+    });
 
 	</script>
 	<script src="https://kit.fontawesome.com/6b46e3b6bd.js" crossorigin="anonymous"></script>
